@@ -20,4 +20,11 @@ const EnextApi_Live = HttpApiBuilder.group(EnextApi, "render", (handlers) =>
 handlers.handle("first", () => Effect.succeed("Hello World"))
 )
 
-const EnextApiLive = HttpApiBuilder.api(EnextApi).pipe(Layer.provide(EnextApi_Live));
+const EnextSrverLive = HttpApiBuilder.api(EnextApi).pipe(Layer.provide(EnextApi_Live));
+
+const serverLive = HttpApiBuilder.serve().pipe(
+  Layer.provide(EnextSrverLive),
+  Layer.provide(BunHttpServer.layer(createServer))
+);
+
+Layer.launch(serverLive).pipe(BunRuntime.runMain)
